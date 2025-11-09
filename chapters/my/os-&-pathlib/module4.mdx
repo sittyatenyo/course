@@ -1,0 +1,159 @@
+---
+title: ဖိုင်များကို စာရင်းပြုစုခြင်းနှင့် လှည့်ပတ်ခြင်း
+type: sublesson
+number: 'Module 4:'
+parentSlug: '04-os-&-pathlib'
+---
+---
+
+## Module 4: ဖိုင်များကို စာရင်းပြုစုခြင်းနှင့် လှည့်ပတ်ခြင်း (Listing and Iterating)
+
+ဖိုင်စနစ်ကို ကိုင်တွယ်တဲ့ Script တိုင်းမှာ "ဒီ folder ထဲမှာ ဘာတွေရှိလဲ" ဆိုတာကို စစ်ဆေးတဲ့ အဆင့်က မဖြစ်မနေ ပါဝင်ပါတယ်။ ဒီ Module မှာ အဆင့်လိုက် (Shallow) စာရင်းပြုစုခြင်းနှင့် နက်ရှိုင်းစွာ (Recursive) ရှာဖွေခြင်း နည်းလမ်းတွေကို လေ့လာပါမယ်။
+
+---
+
+### 4.1 `os.listdir()` ဖြင့် အဆင့်လိုက် စာရင်းပြုစုခြင်း (Shallow Listing)
+
+
+
+`os.listdir()` Function ဟာ သတ်မှတ်ထားတဲ့ Directory အတွင်းမှာရှိတဲ့ ဖိုင်တွေနဲ့ ဖိုဒါတွေရဲ့ အမည်တွေကို **List of Strings** အနေနဲ့ ရိုးရိုးရှင်းရှင်း ပြန်ပေးပါတယ်။ ဒါပေမဲ့ သူက လက်ရှိ folder ရဲ့ အောက်တစ်ဆင့်ကိုပဲ စစ်ဆေးပေးနိုင်ပါတယ်။
+
+**၁။ အခြေခံ အသုံးပြုပုံ**
+
+```python
+import os
+
+# CWD ကို ညွှန်းပါ (သို့မဟုတ် Path တစ်ခု ပေးပါ)
+items_in_cwd = os.listdir(os.getcwd())
+
+print("CWD အတွင်းရှိ Item များ:")
+for item in items_in_cwd[:5]: # ပထမ ၅ ခုကိုသာ ပြသပါ
+    print(f"- {item}")
+```
+
+**၂။ `os.listdir()` ရဲ့ အားနည်းချက် (Relative Names)**
+
+`os.listdir()` က ပြန်ပေးတဲ့ ရလဒ်တွေဟာ ဖိုင်အမည် (String) သာ ဖြစ်ပါတယ်။ အဲဒါတွေဟာ **Relative Path** တွေဖြစ်ပြီး Absolute Path မဟုတ်ပါဘူး။
+
+<Notice type="warning">
+**သတိထားရန်:** `os.listdir()` ကရတဲ့ String ကို ယူပြီး ဖိုင်တစ်ခုရဲ့ `is_file()` ကို စစ်ဆေးချင်ရင်၊ အဲဒီ String ကို CWD နဲ့ **ပြန်ပေါင်းစပ်** ပေးဖို့ လိုအပ်ပါတယ်။
+</Notice>
+
+```python
+# ဥပမာ - 'test_folder' ထဲက items တွေကို စစ်ဆေးမယ် (test_folder ရှိထားပြီးသားလို့ ယူဆပါ)
+folder_to_check = "test_folder"
+
+for item_name in os.listdir(folder_to_check):
+    # item_name ကို တိုက်ရိုက် စစ်ဆေးလို့ မရပါဘူး
+    # ညာဘက်ကလို os.path.join() နဲ့ ပေါင်းစပ်ပြီးမှ စစ်ဆေးရပါမယ်
+    
+    full_path = os.path.join(folder_to_check, item_name)
+    
+    if os.path.isfile(full_path):
+        print(f"[FILE]: {item_name}")
+    elif os.path.isdir(full_path):
+        print(f"[DIR]: {item_name}")
+```
+
+---
+
+### 4.2 `pathlib.Path.iterdir()` ဖြင့် လှည့်ပတ်ခြင်း (Modern Iteration)
+
+
+
+`pathlib` ကို အသုံးပြုရင်တော့ `os.listdir()` မှာလို Path တွေကို String တွေနဲ့ ကိုင်တွယ်ရတဲ့ အခက်အခဲ မရှိတော့ပါဘူး။ `Path.iterdir()` Method က Directory အတွင်းက Item တွေကို **Path Object** တွေအဖြစ် တိုက်ရိုက် ပြန်ပေးပါတယ်။
+
+**၁။ အခြေခံ အသုံးပြုပုံ**
+
+```python
+from pathlib import Path
+
+target_dir = Path("my_project_data") # ဥပမာအနေနဲ့ Path Object ဖန်တီးပါ
+
+if target_dir.exists() and target_dir.is_dir():
+    print(f"\n{target_dir} အတွင်းရှိ Item များ (Pathlib):")
+    
+    # iterdir() ကနေ Path Object တွေ တိုက်ရိုက် ရရှိလာပါတယ်
+    for path_object in target_dir.iterdir():
+        # Path Object မှာ is_file() လို Method တွေ ပါပြီးသားမို့ ချက်ချင်း စစ်ဆေးနိုင်
+        if path_object.is_file():
+            print(f"[FILE] {path_object.name} - Size: {path_object.stat().st_size} bytes")
+        elif path_object.is_dir():
+            print(f"[DIR]: {path_object.name}")
+```
+
+<Notice type="success">
+**အားသာချက်:** `iterdir()` ကနေ ရတဲ့ Path Object တွေဟာ သူ့ဖာသာသူ Absolute Path ကို သိရှိပြီးသား ဖြစ်တာကြောင့်၊ `os.path.join()` နဲ့ ပြန်ပေါင်းစပ်စရာ မလိုတော့ပါဘူး။ Code က ပိုမို ရှင်းလင်းလာပါတယ်။
+</Notice>
+
+---
+
+### 4.3 Recursive Search: `os.walk()` နှင့် `pathlib.Path.glob()` (အဆင့်တိုင်း ရှာဖွေခြင်း)
+
+
+
+တချို့အခြေအနေတွေမှာ လက်ရှိ Folder အောက်မှာရှိတဲ့ **Sub-folder တွေ အားလုံး** ထဲက ဖိုင်တွေကိုပါ ရှာဖွေဖို့ လိုအပ်ပါတယ်။ ဒါကို **Recursive Search** လို့ခေါ်ပါတယ်။
+
+#### ၁။ `os.walk()` - သမားရိုးကျ နည်းလမ်း (The Workhorse)
+
+`os.walk()` Function ဟာ Directory Tree တစ်ခုလုံးကို နက်နက်ရှိုင်းရှိုင်း လှည့်ပတ်ဖို့အတွက် အစွမ်းထက်ပါတယ်။
+
+`os.walk()` ကို Loop ပတ်လိုက်တဲ့အခါ၊ Loop တစ်ပတ်စီမှာ **Tuple ၃ ခု** (dirpath, dirnames, filenames) ကို ပြန်ပေးပါတယ်။
+
+```python
+# ဥပမာ- 'project_root' Folder တစ်ခုလုံးကို ရှာဖွေမယ်
+search_root = "project_root"
+
+print("\n--- os.walk() ဖြင့် Recursive Search ---")
+
+for root, dirs, files in os.walk(search_root):
+    # root: လက်ရှိ လုပ်ဆောင်နေသော folder (String)
+    # dirs: လက်ရှိ root အောက်က sub-folder အမည်များ (List of Strings)
+    # files: လက်ရှိ root အောက်က ဖိုင်အမည်များ (List of Strings)
+    
+    for file_name in files:
+        # ဖိုင်ရဲ့ Absolute Path ကို ပြန်ပေါင်းစပ်ရပါမယ်
+        full_file_path = os.path.join(root, file_name)
+        
+        # ဥပမာ - .txt ဖိုင်တွေပဲ စိတ်ဝင်စားရင်
+        if file_name.endswith(".txt"):
+             print(f"Found TXT: {full_file_path}")
+```
+<Notice type="warning">
+**မှတ်ချက်:** `os.walk()` ဟာ အစွမ်းထက်ပေမယ့်၊ Path တွေကို String အနေနဲ့ ကိုင်တွယ်ရပြီး `os.path.join()` ကို အမြဲတမ်း သုံးစွဲနေရတာကြောင့် Code ရှုပ်ထွေးနိုင်ပါတယ်။
+</Notice>
+
+#### ၂။ `pathlib.Path.glob()` နှင့် `rglob()` - ခေတ်မီသော Pattern Matching
+
+`pathlib` ရဲ့ `glob()` (Global) Method ဟာ Shell-style pattern တွေကို သုံးပြီး ဖိုင်တွေကို ရှာဖွေနိုင်ပါတယ်။
+
+*   **`glob(pattern)`:** လက်ရှိ Directory အတွင်းမှာသာ ရှာဖွေသည်။
+*   **`rglob(pattern)`:** Recursive (အောက်ဆုံး Sub-folder အထိ) ရှာဖွေသည်။
+
+**Wildcard Pattern များ:**
+
+*   `*`: စာလုံး (သို့မဟုတ်) နာမည် အားလုံး
+*   `**`: Sub-directory အဆင့် အားလုံး
+*   `[a-z]`: သတ်မှတ်ထားသော စာလုံးများ
+
+```python
+# ဥပမာ - project_root အောက်က .py ဖိုင်အားလုံးကို ရှာမယ်
+root_path = Path("project_root")
+
+# **/*.py ဆိုတာက root_path အောက်က ဘယ်အဆင့်မှာပဲဖြစ်ဖြစ် .py နဲ့ ဆုံးတဲ့ဖိုင်ကို ရှာခိုင်းတာပါ
+print("\n--- pathlib.Path.rglob() ဖြင့် Recursive Search ---")
+
+for py_file in root_path.rglob("*.py"):
+    # py_file သည် Path Object ဖြစ်ပြီးသား
+    print(f"Python File: {py_file}")
+
+# ဥပမာ - current folder ထဲက 'temp' နဲ့ စတဲ့ folder တွေ ရှာမယ်
+for temp_dir in Path.cwd().glob("temp*"):
+    if temp_dir.is_dir():
+        print(f"Temp Folder: {temp_dir.name}")
+```
+
+**Module 4 နိဂုံးချုပ်:**
+
+*   ဖိုင်အဆင့် တစ်ဆင့်တည်းကိုသာ စာရင်းပြုစုမည်ဆိုပါက **`pathlib.Path.iterdir()`** ကို အသုံးပြုပါ။
+*   Sub-folder အားလုံးကိုပါ နက်ရှိုင်းစွာ ရှာဖွေမည်ဆိုပါက **`pathlib.Path.rglob()`** ကို အသုံးပြုခြင်းဟာ Code ကို အလွယ်ကူဆုံးနှင့် အသန့်ရှင်းဆုံး ရေးသားနိုင်မယ့် နည်းလမ်းပဲ ဖြစ်ပါတယ်ခင်ဗျာ။

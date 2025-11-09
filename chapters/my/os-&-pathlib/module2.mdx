@@ -1,0 +1,171 @@
+---
+title: os ဖြင့် အခြေခံ လုပ်ဆောင်ချက်များ
+type: sublesson
+number: 'Module 2:'
+parentSlug: '02-os-&-pathlib'
+---
+---
+
+## Module 2: `os` Module ဖြင့် အခြေခံ လုပ်ဆောင်ချက်များ (Traditional OS Interactions)
+
+ဒီ Module မှာတော့ Python ရဲ့ သမားရိုးကျ ဖိုင်စနစ်ကိုင်တွယ်ရေး Module ဖြစ်တဲ့ **`os`** ကို အသုံးပြုပြီး၊ ဖိုင်စနစ်နဲ့ ပတ်သက်တဲ့ အခြေခံ လုပ်ဆောင်ချက်တွေကို ဘယ်လိုလုပ်ဆောင်ရမလဲဆိုတာကို လေ့လာသွားပါမယ်။
+
+---
+
+### 2.1 Current Directory နှင့် Environment (လက်ရှိ Directory နှင့် ပတ်ဝန်းကျင်)
+
+
+
+ကျွန်တော်တို့ Python script တစ်ခုကို run တဲ့အခါ၊ အဲဒီ script က ကွန်ပျူတာရဲ့ ဘယ်နေရာ (directory) ကနေ လုပ်ဆောင်နေသလဲဆိုတာ သိဖို့ အရမ်းအရေးကြီးပါတယ်။ အဲဒီနေရာကို **Current Working Directory (CWD)** လို့ခေါ်ပါတယ်။
+
+**၁။ CWD ကို ရှာဖွေခြင်း (`os.getcwd()`)**
+
+လက်ရှိ Directory ကို သိရှိဖို့အတွက် `os.getcwd()` (Get Current Working Directory) ကို အသုံးပြုနိုင်ပါတယ်။
+
+```python
+import os
+
+current_directory = os.getcwd()
+print(f"လက်ရှိ လုပ်ဆောင်နေသော နေရာ (CWD): {current_directory}")
+
+# ဥပမာ- ရလဒ်သည် C:\Users\YourName\MyProject ဖြစ်နိုင်ပါသည်။
+```
+
+**၂။ CWD ကို ပြောင်းလဲခြင်း (`os.chdir()`)**
+
+တစ်ခါတစ်ရံမှာ ကျွန်တော်တို့ဟာ script ရဲ့ လုပ်ဆောင်နေတဲ့ နေရာကို တခြား directory တစ်ခုဆီ ပြောင်းလဲပေးဖို့ လိုအပ်ပါတယ်။ `os.chdir()` (Change Directory) ကို သုံးပြီး လုပ်ဆောင်နိုင်ပါတယ်။
+
+```python
+# 'data' ဆိုတဲ့ folder ဆီ ပြောင်းလဲကြည့်ရအောင်
+try:
+    os.chdir("data")
+    print(f"Directory ပြောင်းလဲပြီးနောက် CWD: {os.getcwd()}")
+except FileNotFoundError:
+    print("Error: 'data' folder ကို ရှာမတွေ့ပါ!")
+
+# အလုပ်ပြီးရင် မူလနေရာကို ပြန်ပြောင်းဖို့လည်း အရေးကြီးပါတယ်။
+```
+
+**၃။ Environment Variables များ (`os.environ`)**
+
+`os` Module ဟာ System ရဲ့ ပတ်ဝန်းကျင်ဆိုင်ရာ ပြောင်းလဲနိုင်တဲ့ ကိန်းရှင်များ (Environment Variables) ကိုလည်း ဝင်ရောက်ကြည့်ရှုခွင့် ပေးပါတယ်။ ဥပမာ - User ရဲ့ Home Directory ဒါမှမဟုတ် Path ကိန်းရှင်ကို ကြည့်တာမျိုးပါ။
+
+```python
+# Windows မှာဆို USERNAME, Linux မှာဆို HOME
+user_name = os.environ.get("USERNAME")
+print(f"Current User: {user_name}")
+```
+
+---
+
+### 2.2 Path များကို ပေါင်းစပ်ခြင်း (The Crucial `os.path.join()`)
+
+
+
+ဒီအပိုင်းက `os` Module မှာ **အရေးအကြီးဆုံး** အပိုင်းလို့ ပြောလို့ရပါတယ်။
+
+Path တွေကို String ပုံစံနဲ့ ကိုယ်တိုင်ပေါင်းစပ်ရင် (ဥပမာ- `'folder/' + 'file.txt'`) OS အမျိုးအစားမတူညီမှုကြောင့် Error တက်နိုင်ပါတယ်။ ဒါကို ရှောင်ရှားဖို့အတွက် **`os.path.join()`** ကို အသုံးပြုရပါမယ်။
+
+**ဘာကြောင့် သုံးသင့်တာလဲ။**
+
+`os.path.join()` က ကျွန်တော်တို့ရဲ့ Code ကို **Cross-Platform** ဖြစ်စေပါတယ်။ သင် Windows မှာ ရေးတဲ့ Code ဟာ Linux မှာ အလုပ်လုပ်ဖို့အတွက် Path Separator (`\` ဒါမှမဟုတ် `/`) ကို အလိုအလျောက် ချိန်ညှိပေးပါတယ်။
+
+```python
+# ဥပမာ အခြေအနေ: 'reports' folder ထဲက 'q1_data.xlsx' ကို ညွှန်းလိုသည်
+folder_name = "reports"
+file_name = "q1_data.xlsx"
+
+# မှားယွင်းသော နည်းလမ်း (Windows မှာဆိုရင် error ဖြစ်နိုင်)
+# wrong_path = folder_name + "/" + file_name 
+
+# မှန်ကန်သော နည်းလမ်း (OS အားလုံးအတွက် အဆင်ပြေ)
+correct_path = os.path.join(folder_name, file_name)
+
+print(f"ပေါင်းစပ်ပြီးသော Path: {correct_path}")
+
+# Windows မှာဆို: reports\q1_data.xlsx
+# Linux/macOS မှာဆို: reports/q1_data.xlsx
+```
+
+**Path များကို စစ်ဆေးခြင်း (`os.path` Functions)**
+
+`os` Module ရဲ့ `path` sub-module ဟာ Path တစ်ခုနဲ့ ပတ်သက်တဲ့ အချက်အလက်တွေကို စစ်ဆေးဖို့အတွက် Function တွေ အများကြီး ပေးထားပါတယ်။
+
+| Function | ရှင်းလင်းချက် |
+| :--- | :--- |
+| `os.path.exists(path)` | Path တစ်ခု တကယ်ရှိ/မရှိ စစ်ဆေးသည်။ |
+| `os.path.isdir(path)` | Path သည် Directory (Folder) ဟုတ်/မဟုတ် စစ်ဆေးသည်။ |
+| `os.path.isfile(path)` | Path သည် File ဟုတ်/မဟုတ် စစ်ဆေးသည်။ |
+| `os.path.basename(path)` | Path ရဲ့ နောက်ဆုံးအစိတ်အပိုင်း (ဖိုင်အမည်) ကို ရယူသည်။ |
+| `os.path.dirname(path)` | Path ရဲ့ Directory အစိတ်အပိုင်း (ဖိုဒါလမ်းကြောင်း) ကို ရယူသည်။ |
+
+```python
+# စမ်းသပ်ကြည့်ရအောင်
+file_path = os.path.join("settings", "config.json")
+
+print(f"File တကယ်ရှိသလား: {os.path.exists(file_path)}")
+print(f"ဖိုင်အမည်: {os.path.basename(file_path)}")
+print(f"တည်ရှိရာ ဖိုဒါ: {os.path.dirname(file_path)}")
+```
+
+---
+
+### 2.3 ဖိုင်နှင့် ဖိုဒါများ ဖန်တီးခြင်း/ဖျက်ခြင်း (Creating and Removing)
+
+
+
+Script တွေ ရေးတဲ့အခါ၊ လိုအပ်တဲ့ data တွေကို သိမ်းဆည်းဖို့အတွက် Folder အသစ်တွေ ဖန်တီးတာ၊ မလိုအပ်တော့တဲ့ ဖိုင်တွေကို ဖျက်ပစ်တာမျိုးတွေ လုပ်ရပါတယ်။
+
+**၁။ Folder တစ်ခု ဖန်တီးခြင်း (`os.mkdir()` နှင့် `os.makedirs()`)**
+
+| Function | ရှင်းလင်းချက် |
+| :--- | :--- |
+| `os.mkdir(path)` | Folder တစ်ခုတည်းကိုသာ ဖန်တီးသည်။ **Parent folder** မရှိရင် Error တက်မည်။ |
+| `os.makedirs(path)` | Folder အများအပြားကို တစ်ပြိုင်နက်တည်း ဖန်တီးသည်။ **Parent folder** မရှိရင်လည်း ဖန်တီးပေးမည်။ |
+
+```python
+# 1. Folder တစ်ခုတည်း ဖန်တီးခြင်း
+if not os.path.exists("temp_data"):
+    os.mkdir("temp_data")
+    print("temp_data folder ဖန်တီးပြီးပါပြီ။")
+
+# 2. Folder များစွာ (Nested Folders) ဖန်တီးခြင်း
+nested_path = os.path.join("logs", "2023", "q4")
+# exists_ok=True က folder ရှိပြီးသားဆိုရင် error မပြအောင် တားဆီးပေးပါတယ်။
+os.makedirs(nested_path, exist_ok=True)
+print(f"Nested folder: {nested_path} ဖန်တီးပြီးပါပြီ။")
+```
+
+**၂။ ဖိုင်များနှင့် ဖိုဒါများ ဖျက်ခြင်း**
+
+| Function | ရှင်းလင်းချက် |
+| :--- | :--- |
+| `os.remove(path)` | ဖိုင်တစ်ခုတည်းကို ဖျက်သည်။ |
+| `os.rmdir(path)` | Directory (Folder) ကို ဖျက်သည်။ **Folder သည် လုံးဝ ဗလာ (Empty) ဖြစ်နေရမည်။** |
+| `shutil.rmtree(path)` | **သတိထားသုံးပါ**။ Folder အတွင်းရှိ ဖိုင်များ၊ Sub-folder များ အားလုံးကို အပြီးတိုင် ဖျက်ပစ်သည်။ (High-level utility ဖြစ်၍ `shutil` module လိုအပ်သည်) |
+
+```python
+# ဥပမာ - test.txt ဖိုင်ကို ဖျက်ခြင်း
+temp_file = "temp_data/test.txt"
+
+# ပထမဆုံး ဖိုင်ဖန်တီးကြည့်ပါ
+with open(temp_file, 'w') as f:
+    f.write("This is temporary.")
+
+# ဖိုင်ကို ဖျက်ပစ်ခြင်း
+if os.path.exists(temp_file):
+    os.remove(temp_file)
+    print(f"{temp_file} ဖိုင်ကို ဖျက်ပြီးပါပြီ။")
+
+# ဗလာဖြစ်နေသော folder ကို ဖျက်ခြင်း
+try:
+    os.rmdir("temp_data")
+    print("temp_data folder ကို ဖျက်ပြီးပါပြီ။")
+except OSError as e:
+    # Folder ထဲမှာ ဖိုင်ရှိနေရင် ဒီ Error တက်ပါမယ်
+    print(f"Folder မဖျက်နိုင်ပါ: {e}")
+```
+
+<Notice type="warning">
+**လုံခြုံရေး အရေးကြီး:** `os.remove()` နှင့် `os.rmdir()` တို့ကို အသုံးပြုရာတွင် မလိုလားအပ်သော ဖိုင်များ မဖျက်မိစေရန် Path များကို အမြဲတမ်း နှစ်ခါစစ်ဆေးပါ။ `shutil.rmtree()` သည် အန္တရာယ်ရှိသောကြောင့် ပို၍ သတိထားအသုံးပြုရပါမည်။
+</Notice>

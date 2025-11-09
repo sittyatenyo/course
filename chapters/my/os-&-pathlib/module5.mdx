@@ -1,0 +1,165 @@
+---
+title: ဖိုင်များ ပြောင်းလဲခြင်းနှင့် MetaData
+type: sublesson
+number: 'Module 5:'
+parentSlug: '05-os-&-pathlib'
+---
+---    - local: "os-&-pathlib/intro.mdx"
+      title: "သင်တန်း မိတ်ဆက် (Welcome)"
+    - local: "os-&-pathlib/module1.mdx"
+      title: "Module 1: နိဒါန်းနှင့် လမ်းကြောင်းများ၏ သဘောတရား"
+    - local: "os-&-pathlib/module2.mdx"
+      title: "Module 2: os ဖြင့် အခြေခံ လုပ်ဆောင်ချက်များ"
+    - local: "os-&-pathlib/module3.mdx"
+      title: "Module 3: pathlib ဖြင့် ခေတ်မီသော ချဉ်းကပ်မှု"
+    - local: "os-&-pathlib/module4.mdx"
+      title: "Module 4: ဖိုင်များကို စာရင်းပြုစုခြင်းနှင့် လှည့်ပတ်ခြင်း"
+    - local: "os-&-pathlib/module5.mdx"
+      title: "Module 5: "
+    - local: "os-&-pathlib/module6.mdx"
+      title: "Module 6: Main Project အကောင်အထည်ဖော်ခြင်း"
+    - local: "os-&-pathlib/summarize.mdx"
+      title: "သင်တန်းအနှစ်ချုပ်နှင့် နိဂုံးချုပ် မှတ်ချက်များ"
+    - local: "os-&-pathlib/finalassessment.mdx"
+      title: "Final Assessment နှင့် Mini Project များ"
+
+## Module 5: ဖိုင်များ ပြောင်းလဲခြင်းနှင့် MetaData (Moving, Copying, and Stats)
+
+ဒီ Module ရဲ့ ရည်ရွယ်ချက်ကတော့ ဖိုင်များကို ထိရောက်စွာ ကိုင်တွယ်နိုင်ရန် ဖြစ်ပါတယ်။ အထူးသဖြင့် ဖိုင်များကို ရွှေ့ပြောင်းခြင်းနှင့် ကူးယူခြင်းကိစ္စတွေမှာ `os` နှင့် `pathlib` ၏ အားသာချက်များကို ပေါင်းစပ်အသုံးပြုရမယ့် အကြောင်းအရာများ ပါဝင်ပါတယ်။
+
+---
+
+### 5.1 ဖိုင်များ ပြောင်းလဲခြင်းနှင့် အမည်ပြောင်းခြင်း (Rename and Replace)
+
+
+
+ဖိုင်တစ်ခုရဲ့ အမည်ကို ပြောင်းလဲဖို့ သို့မဟုတ် နေရာရွှေ့ပြောင်းဖို့အတွက် `os.rename()` သို့မဟုတ် `pathlib` ရဲ့ Method များကို အသုံးပြုနိုင်ပါတယ်။
+
+**၁။ ဖိုင်အမည် ပြောင်းလဲခြင်း (`Path.rename()` / `os.rename()`)**
+
+Path Object မှာ `rename()` Method ပါဝင်တာကြောင့် အမည်ပြောင်းဖို့ လွယ်ကူပါတယ်။
+
+```python
+from pathlib import Path
+import os
+
+# ဥပမာ - old_file.txt ကို new_file.txt အဖြစ် ပြောင်းပါ
+original_path = Path("temp/old_file.txt")
+
+# စမ်းသပ်ရန်အတွက် ဖိုင်တစ်ခု ဖန်တီးထားပါ (ရှိပြီးသားလို့ ယူဆပါ)
+if not original_path.exists():
+    original_path.parent.mkdir(exist_ok=True)
+    original_path.touch()
+
+# pathlib ဖြင့် အမည်ပြောင်းခြင်း
+new_name_path = original_path.rename(original_path.parent / "new_file.txt")
+print(f"အမည်ပြောင်းလဲပြီး Path: {new_name_path}")
+
+# os ဖြင့် အမည်ပြောင်းခြင်း (String တွေနဲ့ ကိုင်တွယ်ရသည်)
+# os.rename("temp/new_file.txt", "temp/renamed_final.txt")
+```
+
+**၂။ ဖိုင်ကို နေရာရွှေ့ပြောင်းခြင်း (`Path.replace()`)**
+
+`pathlib` ရဲ့ `replace()` Method ကို အသုံးပြုပြီး ဖိုင်တစ်ခုကို အခြားနေရာသို့ ရွှေ့ပြောင်းနိုင်ပါတယ်။ ဒီ Method က ရည်ရွယ်ထားတဲ့နေရာမှာ ဖိုင်ရှိနေရင် **ရှိနေတဲ့ဖိုင်ကို အစားထိုး ဖျက်ဆီးပစ်ပါတယ်** (Overwrite လုပ်ပါတယ်)။
+
+```python
+# ဥပမာ - new_file.txt ကို 'backup' folder ထဲ ရွှေ့မယ်
+backup_dir = Path("backup")
+backup_dir.mkdir(exist_ok=True) # backup folder မရှိရင် ဖန်တီးပါ
+
+source_path = new_name_path # 'temp/new_file.txt'
+
+# Destination Path အသစ်
+destination_path = backup_dir / source_path.name
+
+# ရွှေ့ပြောင်းခြင်း (Source က ဖျက်ပြီး Destination မှာ ရောက်သွားမယ်)
+source_path.replace(destination_path)
+print(f"ဖိုင်ကို {destination_path} သို့ ရွှေ့ပြီးပါပြီ။")
+```
+
+---
+
+### 5.2 Copy လုပ်ခြင်းနှင့် High-Level Operations (`shutil` Module)
+
+
+
+`os` နှင့် `pathlib` တို့သည် **ဖိုင်ကို ရွှေ့ပြောင်းခြင်း (Move)** သို့မဟုတ် **ဖိုင်အမည် ပြောင်းလဲခြင်း (Rename)** ကိုသာ တိုက်ရိုက် လုပ်ဆောင်နိုင်ပါတယ်။ ဖိုင်တစ်ခုကို နေရာတစ်ခုမှ အခြားနေရာသို့ **ကူးယူခြင်း (Copy)** လုပ်ရန်အတွက် Python Standard Library ထဲမှ **`shutil` (Shell Utilities)** Module ကို အသုံးပြုရပါမယ်။
+
+**၁။ ဖိုင်များကို ကူးယူခြင်း (`shutil.copy()` / `shutil.copy2()`)**
+
+`shutil.copy()` သည် Source ဖိုင်ကို Destination သို့ ကူးယူပေးသည်။
+
+```python
+import shutil
+
+source_file = Path("backup/new_file.txt")
+destination_folder = Path("archive")
+destination_folder.mkdir(exist_ok=True)
+
+# ဖိုင်ကို folder ထဲသို့ ကူးယူခြင်း
+shutil.copy(source_file, destination_folder)
+
+print(f"File ကို {destination_folder} ထဲသို့ ကူးယူပြီးပါပြီ။")
+
+# shutil.copy2() ကို သုံးရင် Metadata တွေပါ ကူးသွားပါတယ်
+```
+
+**၂။ Folder များကို Recursive ကူးယူခြင်း (`shutil.copytree()`)**
+
+`os` နှင့် `pathlib` တို့သည် Folder တစ်ခုလုံးကို Sub-folder များပါမကျန် တစ်ပြိုင်နက် ကူးယူခြင်း (သို့မဟုတ်) ဖျက်ခြင်းကို မလုပ်နိုင်ပါ။ `shutil` သည် ထိုကဲ့သို့သော High-level အလုပ်များကို လုပ်ဆောင်နိုင်ရန် တည်ဆောက်ထားပါသည်။
+
+```python
+source_dir = Path("archive")
+target_dir = Path("archive_copy")
+
+# Folder တစ်ခုလုံးကို Sub-folder များပါမကျန် ကူးယူခြင်း
+# shutil.copytree(source_dir, target_dir)
+
+# သတိထားပြီး အသုံးပြုရမည့် Function (Folder အားလုံးကို ဖျက်ခြင်း)
+# shutil.rmtree(target_dir) 
+```
+
+<Notice type="info">
+**Tip:** ဖိုင်များကို ရွှေ့ရန် `Path.replace()` ကို သုံးနိုင်ပြီး၊ ဖိုင်များကို ကူးယူရန် **`shutil.copy()`** ကို သုံးသင့်သည်။
+</Notice>
+
+---
+
+### 5.3 ဖိုင်၏ အချက်အလက် (Metadata) ရယူခြင်း (File Statistics)
+
+
+
+ဖိုင်တစ်ခု၏ အခြေအနေ သို့မဟုတ် Metadata (ဖန်တီးသည့်အချိန်၊ အရွယ်အစား၊ နောက်ဆုံး ပြင်ဆင်သည့်အချိန်) များကို သိလိုတဲ့အခါ `os.stat()` သို့မဟုတ် `Path.stat()` ကို အသုံးပြုရပါတယ်။
+
+**၁။ `Path.stat()` ဖြင့် Metadata ရယူခြင်း**
+
+`stat()` Method ကို ခေါ်လိုက်တဲ့အခါ `stat_result` Object တစ်ခုကို ပြန်ပေးပါတယ်။ ဒီ Object ထဲမှာ လိုအပ်တဲ့ သတင်းအချက်အလက်တွေ အားလုံးပါဝင်ပါတယ်။
+
+```python
+import datetime
+
+# ကူးယူထားသော ဖိုင်ကို စစ်ဆေးမည်
+file_to_check = Path("archive/new_file.txt")
+stats = file_to_check.stat()
+
+print("\n--- File Metadata ---")
+print(f"၁။ ဖိုင်အရွယ်အစား (Bytes): {stats.st_size}")
+
+# st_mtime: နောက်ဆုံး ပြင်ဆင်သည့်အချိန် (Timestamp - Seconds)
+last_modified_timestamp = stats.st_mtime
+
+# Timestamp ကို လူဖတ်နိုင်သော DateTime သို့ ပြောင်းလဲခြင်း
+modified_time = datetime.datetime.fromtimestamp(last_modified_timestamp)
+
+print(f"၂။ နောက်ဆုံး ပြင်ဆင်သည့်အချိန်: {modified_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+# ဖိုင်အရွယ်အစားကို ပိုမိုလှပစွာ ပြသခြင်း Function (ဥပမာ- 12.5 KB)
+def format_bytes(size):
+    # ဤနေရာတွင် Bytes ကို KB, MB သို့ ပြောင်းလဲသည့် Logic ထည့်သွင်းနိုင်သည်
+    pass 
+```
+
+**Module 5 နိဂုံးချုပ်:**
+
+ဒီ Module မှာ ကျွန်တော်တို့ဟာ ဖိုင်များကို ထိန်းချုပ်ပုံ (Rename, Replace, Copy) တွေအပြင်၊ ဖိုင်ရဲ့ နောက်ကွယ်က Metadata တွေကို ဘယ်လိုရယူရမလဲဆိုတာကိုပါ သိရှိခဲ့ရပါပြီ။ နောက်ဆုံး Module မှာတော့ ဒီအသိပညာအားလုံးကို ပေါင်းစပ်ပြီး Main Project ကို အကောင်အထည်ဖော်သွားမှာ ဖြစ်ပါတယ်။

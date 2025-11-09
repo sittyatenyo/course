@@ -1,0 +1,125 @@
+---
+title: pathlib ဖြင့် ခေတ်မီသော ချဉ်းကပ်မှု
+type: sublesson
+number: 'Module 3:'
+parentSlug: '03-os-&-pathlib'
+---
+---
+
+## Module 3: `pathlib` ဖြင့် ခေတ်မီသော ချဉ်းကပ်မှု (The Modern OOP Approach)
+
+ဒီ Module မှာတော့ Python 3.4 နောက်ပိုင်းမှာ စတင်မိတ်ဆက်ခဲ့တဲ့ `pathlib` (Path Library) ကို အသုံးပြုပြီး ဖိုင်စနစ်ကို Object-Oriented ပုံစံဖြင့် ကိုင်တွယ်ပုံကို အသေးစိတ် လေ့လာသွားမှာ ဖြစ်ပါတယ်။ `pathlib` ရဲ့ အဓိကအားသာချက်က **ဖတ်ရလွယ်ခြင်း** နဲ့ **Cross-Platform** ဖြစ်ခြင်းပဲ ဖြစ်ပါတယ်။
+
+---
+
+### 3.1 Path Object ကို မိတ်ဆက်ခြင်း (Introduction to Path Objects)
+
+
+
+`os` module မှာ Path တွေကို String (စာသား) အနေနဲ့ ကိုင်တွယ်ခဲ့ရပါတယ်။ `pathlib` မှာတော့ **`Path` Object** အနေနဲ့ ကိုင်တွယ်ပါတယ်။ ဒါက ဘာကိုဆိုလိုသလဲဆိုတော့၊ Path တစ်ခုချင်းစီမှာ သူ့နဲ့ သက်ဆိုင်တဲ့ လုပ်ဆောင်ချက် (Method) တွေ ပါဝင်လာတာကို ဆိုလိုပါတယ်။
+
+**၁။ Path Object ဖန်တီးခြင်း**
+
+`pathlib` ကို စတင်အသုံးပြုဖို့အတွက် `Path` class ကို import လုပ်ပြီး၊ လမ်းကြောင်းတစ်ခုကို ပေးလိုက်ရုံပါပဲ။
+
+```python
+from pathlib import Path
+
+# လက်ရှိ Working Directory ကို ညွှန်းတဲ့ Path Object ဖန်တီးခြင်း
+current_path = Path.cwd()
+print(f"လက်ရှိ Path Object: {current_path}")
+
+# Absolute Path ဖန်တီးခြင်း
+absolute_example = Path("C:/Users/Public/Desktop")
+
+# Relative Path ဖန်တီးခြင်း
+relative_example = Path("data/images/photo.jpg")
+print(f"Relative Path Object: {relative_example}")
+```
+
+**၂။ Forward Slash (/) ဖြင့် Path များ ပေါင်းစပ်ခြင်း**
+
+`pathlib` ရဲ့ အလှပဆုံး အင်္ဂါရပ်ကတော့ Path တွေကို ပေါင်းစပ်ဖို့အတွက် Python ရဲ့ **Slash Operator (`/`)** ကို အသုံးပြုနိုင်တာပါပဲ။ `os.path.join()` လို Function ကို ခေါ်စရာ မလိုတော့ပါဘူး။
+
+```python
+# Folder တစ်ခုကို Path Object အနေနဲ့ အရင်ဖန်တီးမယ်
+base_folder = Path("project_assets")
+
+# Slash Operator ကို သုံးပြီး Path တွေ ဆက်တိုက် ပေါင်းစပ်မယ်
+full_path = base_folder / "documents" / "report_q1.pdf"
+
+print(f"ပေါင်းစပ်ပြီးသော Path: {full_path}")
+
+# ရလဒ်: project_assets/documents/report_q1.pdf (OS ပေါ်မူတည်ပြီး Separator ကို အလိုအလျောက် ချိန်ညှိပေးသည်)
+```
+<Notice type="success">
+**အားသာချက်:** ဒီနည်းလမ်းက `os.path.join()` ထက် ပိုပြီး ဖတ်ရလွယ်ကူသလို၊ OS ဘာပဲဖြစ်ဖြစ် အမြဲတမ်း မှန်ကန်စွာ အလုပ်လုပ်ပါတယ်။
+</Notice>
+
+---
+
+### 3.2 Path Attributes များ ထုတ်ယူခြင်း (Extracting Path Components)
+
+
+
+Path Object တွေဟာ String တွေ မဟုတ်တဲ့အတွက်၊ ဖိုင်အမည်၊ Extension၊ ဒါမှမဟုတ် Parent Folder ကို သိလိုရင် String ကို ဖြတ်တောက်နေစရာ မလိုဘဲ၊ Object ရဲ့ Attributes တွေကို တိုက်ရိုက် ခေါ်ယူနိုင်ပါတယ်။
+
+```python
+example_file = Path("/home/user/documents/report_2024.docx")
+```
+
+| Attribute | ရှင်းလင်းချက် | ရလဒ် (အထက်ပါဥပမာ) |
+| :--- | :--- | :--- |
+| `name` | ဖိုင်အမည် အပြည့်အစုံ | `report_2024.docx` |
+| `suffix` | ဖိုင်၏ Extension (နောက်ဆုံး Extension) | `.docx` |
+| `suffixes` | Path တွင်ရှိသော Extension အားလုံး (e.g. `.tar.gz`) | `['.docx']` |
+| `stem` | Extension မပါသော ဖိုင်အမည် | `report_2024` |
+| `parent` | Path ၏ အပေါ်ဆုံး Directory (Path Object) | `Path('/home/user/documents')` |
+| `anchor` | Root Directory (e.g. Linux မှာ '/') | `/` |
+
+```python
+# လက်တွေ့ စမ်းသပ်ကြည့်ရအောင်
+download_path = Path("downloads/archive.tar.gz")
+
+print(f"၁။ ဖိုင်အမည် (Extension ပါ): {download_path.name}")
+print(f"၂။ Extension မပါသော အမည်: {download_path.stem}")
+print(f"၃။ နောက်ဆုံး Extension: {download_path.suffix}")
+print(f"၄။ Parent Folder: {download_path.parent}")
+```
+
+---
+
+### 3.3 File Status များ စစ်ဆေးခြင်း (Checking File Existence and Type)
+
+
+
+`os.path` မှာလိုပဲ၊ `pathlib.Path` မှာလည်း ဖိုင်တစ်ခု တကယ်ရှိမရှိ၊ ဒါမှမဟုတ် ဖိုင်အမျိုးအစား (File လား၊ Folder လား) ကို စစ်ဆေးဖို့အတွက် Method တွေ ပါဝင်ပါတယ်။ ဒီ Method တွေက True/False ကို ပြန်ပေးပါတယ်။
+
+| Method | ရှင်းလင်းချက် | `os.path` နှင့် ညီမျှမှု |
+| :--- | :--- | :--- |
+| `path.exists()` | ဖိုင် (သို့မဟုတ်) ဖိုဒါ တကယ်ရှိမရှိ စစ်ဆေးသည်။ | `os.path.exists()` |
+| `path.is_file()` | Path သည် သာမန်ဖိုင်တစ်ခု ဟုတ်/မဟုတ် စစ်ဆေးသည်။ | `os.path.isfile()` |
+| `path.is_dir()` | Path သည် Directory (Folder) ဟုတ်/မဟုတ် စစ်ဆေးသည်။ | `os.path.isdir()` |
+| `path.is_absolute()` | Path သည် Absolute Path ဟုတ်/မဟုတ် စစ်ဆေးသည်။ | N/A |
+
+```python
+# ဥပမာ - စမ်းသပ်ဖို့အတွက် Path Object တစ်ခု ဖန်တီးမယ်
+test_path = Path("my_script.py")
+
+# စစ်ဆေးကြည့်ရအောင်
+print(f"Path တည်ရှိသလား: {test_path.exists()}")
+print(f"ဒါက ဖိုင်လား: {test_path.is_file()}")
+
+# Parent Directory ကို စစ်ဆေးခြင်း
+parent_folder = test_path.parent
+print(f"Parent Folder ရှိသလား: {parent_folder.exists()}")
+print(f"Parent Folder က Directory လား: {parent_folder.is_dir()}")
+```
+
+<Notice type="info">
+**Hands-On Tip:** `pathlib` ရဲ့ Method တွေကို သုံးတဲ့အခါ **`if path.exists() and path.is_file():`** လိုမျိုး Logical Check တွေကို တစ်ပေါင်းတည်း လုပ်ဆောင်ဖို့ ပိုမိုလွယ်ကူစေပါတယ်။
+</Notice>
+
+**Module 3 နိဂုံးချုပ်:**
+
+`pathlib` ဟာ `os` ထက် ပိုပြီး သန့်ရှင်းတဲ့၊ Pythonic ဖြစ်တဲ့ နည်းလမ်းကို ပေးစွမ်းပါတယ်။ ရှေ့ဆက်ပြီး ဖိုင်တွေကို စီမံခန့်ခွဲရာမှာ ကျွန်တော်တို့ဟာ ဒီ **Path Object** တွေကို အဓိက အသုံးပြုသွားမှာ ဖြစ်ပါတယ်။
