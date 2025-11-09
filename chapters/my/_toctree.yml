@@ -262,3 +262,24 @@
     title: အပိုင်း ၂ ထုတ်ပြန်ခြင်း အခမ်းအနား
   - local: events/3
     title: Gradio Blocks Party
+
+  - title: 1. Python File System Mastery (os & pathlib)
+  sections:
+    - local: os-&-pathlib/intro.mdx
+      title: သင်တန်း မိတ်ဆက် (Welcome)
+    - local: os-&-pathlib/module1.mdx
+      title: Module 1: နိဒါန်းနှင့် လမ်းကြောင်းများ၏ သဘောတရား
+    - local: os-&-pathlib/module2.mdx
+      title: Module 2: os ဖြင့် အခြေခံ လုပ်ဆောင်ချက်များ
+    - local: os-&-pathlib/module3.mdx
+      title: Module 3: pathlib ဖြင့် ခေတ်မီသော ချဉ်းကပ်မှု
+    - local: os-&-pathlib/module4.mdx
+      title: Module 4: ဖိုင်များကို စာရင်းပြုစုခြင်းနှင့် လှည့်ပတ်ခြင်း
+    - local: os-&-pathlib/module5.mdx
+      title: Module 5: ဖိုင်များ ပြောင်းလဲခြင်းနှင့် MetaData
+    - local: os-&-pathlib/module6.mdx
+      title: Module 6: Main Project အကောင်အထည်ဖော်ခြင်း
+    - local: os-&-pathlib/summarize.mdx
+      title: သင်တန်းအနှစ်ချုပ်နှင့် နိဂုံးချုပ် မှတ်ချက်များ
+    - local: os-&-pathlib/finalassessment.mdx
+      title: Final Assessment နှင့် Mini Project များ
